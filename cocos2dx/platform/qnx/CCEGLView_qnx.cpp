@@ -943,7 +943,7 @@ bool CCEGLView::HandleEvents()
 
 				case NAVIGATOR_EXIT:
 					// exit the application
-				//	release();
+				  CCApplication::sharedApplication().applicationExit();
 					break;
 
 				case NAVIGATOR_ORIENTATION_CHECK:

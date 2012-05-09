@@ -40,6 +40,11 @@ public:
     virtual void applicationWillEnterForeground() = 0;
 
     /**
+    @brief  The function to be called when the application is exiting
+     */
+    virtual void applicationExit() = 0;
+
+    /**
     @brief	Callback by CCDirector for limit FPS.
     @interval       The time, which expressed in second in second, between current frame and next. 
     */

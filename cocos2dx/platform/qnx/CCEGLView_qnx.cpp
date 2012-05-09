@@ -60,6 +60,14 @@ PFNGLFRAMEBUFFERTEXTURE2DOESPROC   CCEGLView::glFramebufferTexture2DOES = 0;
 PFNGLDELETEFRAMEBUFFERSOESPROC     CCEGLView::glDeleteFramebuffersOES = 0;
 PFNGLCHECKFRAMEBUFFERSTATUSOESPROC CCEGLView::glCheckFramebufferStatusOES = 0;
 
+enum Orientation
+{
+	PORTRAIT,
+	LANDSCAPE,
+	AUTO
+};
+
+static Orientation orientation = LANDSCAPE;
 
 static struct {
 	EGLint surface_type;
@@ -94,7 +102,7 @@ CCEGLView::CCEGLView()
     navigator_request_events(0);
     virtualkeyboard_request_events(0);
 
-    navigator_rotation_lock(false);
+    navigator_rotation_lock(true);
 
     the_configAttr.surface_type = EGL_WINDOW_BIT;
     the_configAttr.red_size 	= EGL_DONT_CARE;
@@ -619,6 +627,15 @@ err = screen_create_window_group(m_screenWindow, m_window_group_id);
         return false;
     }
 
+  int screen_resolution[2];
+
+  rc = screen_get_display_property_iv(screen_disp, SCREEN_PROPERTY_SIZE, screen_resolution);
+  if (rc)
+  {
+    fprintf(stderr, "screen_get_display_property_iv(SCREEN_PROPERTY_SIZE)");
+      return false;
+  }
+
 	screen_display_mode_t screen_mode;
 	rc = screen_get_display_property_pv(screen_disp, SCREEN_PROPERTY_MODE, (void**)&screen_mode);
 	if (rc)
@@ -626,6 +643,8 @@ err = screen_create_window_group(m_screenWindow, m_window_group_id);
 		fprintf(stderr, "screen_get_display_property_pv(SCREEN_PROPERTY_MODE)");
 	    return false;
 	}
+
+	m_ScreenSizeReported = CCSize(screen_mode.width, screen_mode.height);
 
     int size[2];
 	rc = screen_get_window_property_iv(m_screenWindow, SCREEN_PROPERTY_BUFFER_SIZE, size);
@@ -686,6 +705,8 @@ err = screen_create_window_group(m_screenWindow, m_window_group_id);
 	return true;
 }
 
+#define N_BPS_EVENTS 1
+
 bool CCEGLView::initGL()
 {
 	EGLConfig 			config;
@@ -726,8 +747,10 @@ bool CCEGLView::initGL()
 		return false;
 	}
 
+#ifdef BPS_EVENTS
 	// Request screen events
 	screen_request_events(m_screenContext);
+#endif
 
 	m_eglSurface = eglCreateWindowSurface(m_eglDisplay, config, m_screenWindow, NULL);
 	if (m_eglSurface == EGL_NO_SURFACE)
@@ -758,6 +781,12 @@ bool CCEGLView::initGL()
     return true;
 }
 
+CCSize CCEGLView::getScreenSize()
+{
+  CCSize size(m_ScreenSizeReported.width, m_ScreenSizeReported.height);
+  return size;
+}
+
 CCSize CCEGLView::getSize()
 {
 	if (m_bNotHVGA)
@@ -770,86 +799,6 @@ CCSize CCEGLView::getSize()
 		CCSize size(m_sSizeInPixel.width, m_sSizeInPixel.height);
 		return size;
 	}
-}
-
-CCSize CCEGLView::getScreenPropertyBufferSize()
-{
-  int size[2];
-  int rc = screen_get_window_property_iv(m_screenWindow, SCREEN_PROPERTY_BUFFER_SIZE, size);
-  if (rc)
-  {
-    return CCSize(0, 0);
-  }
-  return CCSize(size[0], size[1]);
-}
-
-bool CCEGLView::rotateScreen(int angle) {
-  int rc, rotation, skip = 1, temp;
-  int size[2];
-
-  if ((angle != 0) && (angle != 90) && (angle != 180) && (angle != 270)) {
-    return false;
-  }
-
-  rc = screen_get_window_property_iv(m_screenWindow, SCREEN_PROPERTY_ROTATION, &rotation);
-  if (rc) {
-    return false;
-  }
-
-  rc = screen_get_window_property_iv(m_screenWindow, SCREEN_PROPERTY_BUFFER_SIZE, size);
-  if (rc) {
-    return false;
-  }
-
-  switch (angle - rotation) {
-  case -270:
-  case -90:
-  case 90:
-  case 270:
-    temp = size[0];
-    size[0] = size[1];
-    size[1] = temp;
-    skip = 0;
-    break;
-  }
-
-  if (!skip) {
-    rc = eglMakeCurrent(m_eglDisplay, NULL, NULL, NULL);
-    rc = eglDestroySurface(m_eglDisplay, m_eglSurface);
-
-    rc = screen_set_window_property_iv(m_screenWindow, SCREEN_PROPERTY_SOURCE_SIZE, size);
-
-    rc = screen_set_window_property_iv(m_screenWindow, SCREEN_PROPERTY_BUFFER_SIZE, size);
-    if (rc) {
-      return false;
-    }
-
-    m_eglSurface = eglCreateWindowSurface(m_eglDisplay, chooseConfig(m_eglDisplay, "rgb565"), m_screenWindow, NULL);
-
-    rc = eglMakeCurrent(m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext);
-
-    EGLint width, height;
-
-    if ((m_eglDisplay == EGL_NO_DISPLAY) || (m_eglSurface == EGL_NO_SURFACE) )
-      return false;
-
-    eglQuerySurface(m_eglDisplay, m_eglSurface, EGL_WIDTH, &width);
-    eglQuerySurface(m_eglDisplay, m_eglSurface, EGL_HEIGHT, &height);
-
-    m_sSizeInPixel.width = width;
-    m_sSizeInPixel.height = height;
-  }
-
-  rc = screen_set_window_property_iv(m_screenWindow, SCREEN_PROPERTY_ROTATION, &angle);
-  if (rc) {
-    return false;
-  }
-
-  if (!skip) {
-    Create(m_sSizeInPoint.height, m_sSizeInPoint.width);
-  }
-
-  return true;
 }
 
 bool CCEGLView::isOpenGLReady()
@@ -866,9 +815,9 @@ void CCEGLView::release()
 {
 	if (!m_eglContext || !m_eglDisplay)
 		return;
-
+#ifdef BPS_EVENTS
 	screen_stop_events(m_screenContext);
-
+#endif
 	bps_shutdown();
 
 	screen_destroy_event(m_screenEvent);
@@ -924,10 +873,14 @@ bool CCEGLView::HandleEvents()
 		rc = bps_get_event(&event, 1);
 		assert(rc == BPS_SUCCESS);
 
+#ifdef BPS_EVENTS
 		// break if no more events
 		if (event == NULL)
 			break;
-
+#else
+		if (event != NULL)
+		{
+#endif
 		if (m_pEventHandler && m_pEventHandler->HandleBPSEvent(event))
 			continue;
 
@@ -945,21 +898,6 @@ bool CCEGLView::HandleEvents()
 					// exit the application
 				//	release();
 					break;
-
-				case NAVIGATOR_ORIENTATION_CHECK:
-          //Signal navigator that we intend to resize
-          navigator_orientation_check_response(event, true);
-          break;
-
-				case NAVIGATOR_ORIENTATION:
-				{
-				  int angle = navigator_event_get_orientation_angle(event);
-
-				  rotateScreen(angle);
-
-				  navigator_done_orientation(event);
-				}
-				  break;
 
 				case NAVIGATOR_WINDOW_INACTIVE:
 					if(m_isWindowActive)
@@ -1017,9 +955,21 @@ bool CCEGLView::HandleEvents()
 		      break;
 		  }
 		}
+		}
+#ifndef BPS_EVENTS
+		// for now handle screen events separately from BPS events
+		if (screen_get_event(m_screenContext, m_screenEvent, 0) < 0)
+		{
+			// we have an error condition in the screen event
+			break;
+		}
+		else
+		{
+#else
 		else if (domain == screen_get_domain())
 		{
 			m_screenEvent = screen_event_get_event(event);
+#endif
 			rc = screen_get_event_property_iv(m_screenEvent, SCREEN_PROPERTY_TYPE, &val);
 			if (rc || val == SCREEN_EVENT_NONE)
 				break;

@@ -241,6 +241,7 @@ namespace cocos2d{
 
 	void CCMenu::alignItemsVerticallyWithPadding(float padding)
 	{
+	  float width = 0;
 		float height = -padding;
 		if (m_pChildren && m_pChildren->count() > 0)
 		{
@@ -251,6 +252,7 @@ namespace cocos2d{
                 if (pChild)
                 {
                     height += pChild->getContentSize().height * pChild->getScaleY() + padding;
+                    width = (width > pChild->getContentSize().width * pChild->getScaleX() ? width : pChild->getContentSize().width * pChild->getScaleX());
                 }
             }
 		}
@@ -268,6 +270,8 @@ namespace cocos2d{
                     y -= pChild->getContentSize().height * pChild->getScaleY() + padding;
                 }
             }
+
+            setContentSize(CCSize(width, height));
 		}
 	}
 
@@ -280,6 +284,7 @@ namespace cocos2d{
 	{
 
 		float width = -padding;
+		float height = 0;
 		if (m_pChildren && m_pChildren->count() > 0)
 		{
             CCObject* pObject = NULL;
@@ -289,6 +294,7 @@ namespace cocos2d{
                 if (pChild)
                 {
                     width += pChild->getContentSize().width * pChild->getScaleX() + padding;
+                    height = (height > pChild->getContentSize().height * pChild->getScaleY() ? height : pChild->getContentSize().height * pChild->getScaleY());
                 }
             }
 		}
@@ -306,6 +312,8 @@ namespace cocos2d{
      				x += pChild->getContentSize().width * pChild->getScaleX() + padding;
                 }
             }
+
+            setContentSize(CCSize(width, height));
 		}
 	}
 

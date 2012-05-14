@@ -242,37 +242,37 @@ namespace cocos2d{
 	void CCMenu::alignItemsVerticallyWithPadding(float padding)
 	{
 	  float width = 0;
-		float height = -padding;
-		if (m_pChildren && m_pChildren->count() > 0)
-		{
-            CCObject* pObject = NULL;
-            CCARRAY_FOREACH(m_pChildren, pObject)
-            {
-                CCNode* pChild = dynamic_cast<CCNode*>(pObject);
-                if (pChild)
-                {
-                    height += pChild->getContentSize().height * pChild->getScaleY() + padding;
-                    width = (width > pChild->getContentSize().width * pChild->getScaleX() ? width : pChild->getContentSize().width * pChild->getScaleX());
-                }
-            }
-		}
+	  float height = -padding;
+	  if (m_pChildren && m_pChildren->count() > 0)
+	  {
+	    CCObject* pObject = NULL;
+	    CCARRAY_FOREACH(m_pChildren, pObject)
+	    {
+	      CCNode* pChild = dynamic_cast<CCNode*>(pObject);
+	      if (pChild)
+	      {
+	        height += pChild->getContentSize().height * pChild->getScaleY() + padding;
+	        width = (width > pChild->getContentSize().width * pChild->getScaleX() ? width : pChild->getContentSize().width * pChild->getScaleX());
+	      }
+	    }
+	  }
 
-		float y = height / 2.0f;
-		if (m_pChildren && m_pChildren->count() > 0)
-		{
-            CCObject* pObject = NULL;
-            CCARRAY_FOREACH(m_pChildren, pObject)
-            {
-                CCNode* pChild = dynamic_cast<CCNode*>(pObject);
-                if (pChild)
-                {
-                    pChild->setPosition(ccp(0, y - pChild->getContentSize().height * pChild->getScaleY() / 2.0f));
-                    y -= pChild->getContentSize().height * pChild->getScaleY() + padding;
-                }
-            }
+	  float y = height;
+	  if (m_pChildren && m_pChildren->count() > 0)
+	  {
+	    CCObject* pObject = NULL;
+	    CCARRAY_FOREACH(m_pChildren, pObject)
+	    {
+	      CCNode* pChild = dynamic_cast<CCNode*>(pObject);
+	      if (pChild)
+	      {
+	        pChild->setPosition(ccp(0, y));
+	        y -= pChild->getContentSize().height * pChild->getScaleY() + padding;
+	      }
+	    }
 
-            setContentSize(CCSize(width, height));
-		}
+	    setContentSize(CCSize(width, height));
+	  }
 	}
 
 	void CCMenu::alignItemsHorizontally(void)
@@ -283,38 +283,38 @@ namespace cocos2d{
 	void CCMenu::alignItemsHorizontallyWithPadding(float padding)
 	{
 
-		float width = -padding;
-		float height = 0;
-		if (m_pChildren && m_pChildren->count() > 0)
-		{
-            CCObject* pObject = NULL;
-            CCARRAY_FOREACH(m_pChildren, pObject)
-            {
-                CCNode* pChild = dynamic_cast<CCNode*>(pObject);
-                if (pChild)
-                {
-                    width += pChild->getContentSize().width * pChild->getScaleX() + padding;
-                    height = (height > pChild->getContentSize().height * pChild->getScaleY() ? height : pChild->getContentSize().height * pChild->getScaleY());
-                }
-            }
-		}
+	  float width = -padding;
+	  float height = 0;
+	  if (m_pChildren && m_pChildren->count() > 0)
+	  {
+	    CCObject* pObject = NULL;
+	    CCARRAY_FOREACH(m_pChildren, pObject)
+	    {
+	      CCNode* pChild = dynamic_cast<CCNode*>(pObject);
+	      if (pChild)
+	      {
+	        width += pChild->getContentSize().width * pChild->getScaleX() + padding;
+	        height = (height > pChild->getContentSize().height * pChild->getScaleY() ? height : pChild->getContentSize().height * pChild->getScaleY());
+	      }
+	    }
+	  }
 
-		float x = -width / 2.0f;
-		if (m_pChildren && m_pChildren->count() > 0)
-		{
-            CCObject* pObject = NULL;
-            CCARRAY_FOREACH(m_pChildren, pObject)
-            {
-                CCNode* pChild = dynamic_cast<CCNode*>(pObject);
-                if (pChild)
-                {
-                    pChild->setPosition(ccp(x + pChild->getContentSize().width * pChild->getScaleX() / 2.0f, 0));
-     				x += pChild->getContentSize().width * pChild->getScaleX() + padding;
-                }
-            }
+	  float x = 0;
+	  if (m_pChildren && m_pChildren->count() > 0)
+	  {
+	    CCObject* pObject = NULL;
+	    CCARRAY_FOREACH(m_pChildren, pObject)
+	    {
+	      CCNode* pChild = dynamic_cast<CCNode*>(pObject);
+	      if (pChild)
+	      {
+	        pChild->setPosition(ccp(x, 0));
+	        x += pChild->getContentSize().width * pChild->getScaleX() + padding;
+	      }
+	    }
 
-            setContentSize(CCSize(width, height));
-		}
+	    setContentSize(CCSize(width, height));
+	  }
 	}
 
 	void CCMenu::alignItemsInColumns(unsigned int columns, ...)

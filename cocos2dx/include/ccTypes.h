@@ -325,6 +325,22 @@ typedef enum
 	CCTextAlignmentRight,
 } CCTextAlignment;
 
+typedef enum
+{
+  kTextStyleAliased = 0x00,
+  kTextStyleNormal  = 0x00,
+
+  kTextStyleBold        = 0x01,
+  kTextStyleItalic      = 0x02,
+  kTextStyleAntiAliased = 0x04,
+
+  // helpers
+  kTextStyleBoldItalic   = kTextStyleBold | kTextStyleItalic,
+  kTextStyleBoldAA       = kTextStyleBold | kTextStyleAntiAliased,
+  kTextStyleItalicAA     = kTextStyleItalic | kTextStyleAntiAliased,
+  kTextStyleBoldItalicAA = kTextStyleBold | kTextStyleItalic | kTextStyleAntiAliased,
+} CCTextStyle;
+
 // types for animation in particle systems
 
 // texture coordinates for a quad

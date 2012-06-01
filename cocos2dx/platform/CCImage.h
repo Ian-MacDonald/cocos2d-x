@@ -26,6 +26,7 @@ THE SOFTWARE.
 #define __CC_IMAGE_H_YANGWS_20110115__
 
 #include "CCCommon.h"
+#include "ccTypes.h"
 
 NS_CC_BEGIN;
 
@@ -103,6 +104,7 @@ public:
         int             nWidth = 0, 
         int             nHeight = 0,
         ETextAlign      eAlignMask = kAlignCenter,
+        CCTextStyle     eStyle = kTextStyleAntiAliased,
         const char *    pFontName = 0,
         int             nSize = 0);
 

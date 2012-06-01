@@ -153,9 +153,9 @@ public:
 	Note that the generated textures are of type A8 - use the blending mode (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA).
 	*/
 	/** Initializes a texture from a string with dimensions, alignment, font name and font size */
-	bool initWithString(const char *text, const CCSize& dimensions, CCTextAlignment alignment, const char *fontName, float fontSize);
+	bool initWithString(const char *text, const CCSize& dimensions, CCTextAlignment alignment, const char *fontName, float fontSize, CCTextStyle eStyle = kTextStyleAntiAliased);
 	/** Initializes a texture from a string with font name and font size */
-	bool initWithString(const char *text, const char *fontName, float fontSize);
+	bool initWithString(const char *text, const char *fontName, float fontSize, CCTextStyle eStyle = kTextStyleAntiAliased);
 
 	/** returns the content size of the texture in points */
 	CCSize getContentSize(void);

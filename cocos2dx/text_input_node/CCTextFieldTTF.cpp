@@ -69,10 +69,10 @@ CCTextFieldTTF::~CCTextFieldTTF()
 // static constructor
 //////////////////////////////////////////////////////////////////////////
 
-CCTextFieldTTF * CCTextFieldTTF::textFieldWithPlaceHolder(const char *placeholder, const CCSize& dimensions, CCTextAlignment alignment, const char *fontName, float fontSize)
+CCTextFieldTTF * CCTextFieldTTF::textFieldWithPlaceHolder(const char *placeholder, const CCSize& dimensions, CCTextAlignment alignment, CCTextStyle style, const char *fontName, float fontSize)
 {		
     CCTextFieldTTF *pRet = new CCTextFieldTTF();
-    if(pRet && pRet->initWithPlaceHolder("", dimensions, alignment, fontName, fontSize))
+    if(pRet && pRet->initWithPlaceHolder("", dimensions, alignment, style, fontName, fontSize))
     {
         pRet->autorelease();
         if (placeholder)
@@ -85,10 +85,10 @@ CCTextFieldTTF * CCTextFieldTTF::textFieldWithPlaceHolder(const char *placeholde
     return NULL;
 }
 
-CCTextFieldTTF * CCTextFieldTTF::textFieldWithPlaceHolder(const char *placeholder, const char *fontName, float fontSize)
+CCTextFieldTTF * CCTextFieldTTF::textFieldWithPlaceHolder(const char *placeholder, const char *fontName, float fontSize, CCTextStyle style)
 {
     CCTextFieldTTF *pRet = new CCTextFieldTTF();
-    if(pRet && pRet->initWithString("", fontName, fontSize))
+    if(pRet && pRet->initWithString("", fontName, fontSize, style))
     {
         pRet->autorelease();
         if (placeholder)
@@ -105,23 +105,23 @@ CCTextFieldTTF * CCTextFieldTTF::textFieldWithPlaceHolder(const char *placeholde
 // initialize
 //////////////////////////////////////////////////////////////////////////
 
-bool CCTextFieldTTF::initWithPlaceHolder(const char *placeholder, const CCSize& dimensions, CCTextAlignment alignment, const char *fontName, float fontSize)
+bool CCTextFieldTTF::initWithPlaceHolder(const char *placeholder, const CCSize& dimensions, CCTextAlignment alignment, CCTextStyle style, const char *fontName, float fontSize)
 {
     if (placeholder)
     {
         CC_SAFE_DELETE(m_pPlaceHolder);
         m_pPlaceHolder = new std::string(placeholder);
     }
-    return CCLabelTTF::initWithString(m_pPlaceHolder->c_str(), dimensions, alignment, fontName, fontSize);
+    return CCLabelTTF::initWithString(m_pPlaceHolder->c_str(), dimensions, alignment, style, fontName, fontSize);
 }
-bool CCTextFieldTTF::initWithPlaceHolder(const char *placeholder, const char *fontName, float fontSize)
+bool CCTextFieldTTF::initWithPlaceHolder(const char *placeholder, const char *fontName, float fontSize, CCTextStyle style)
 {
     if (placeholder)
     {
         CC_SAFE_DELETE(m_pPlaceHolder);
         m_pPlaceHolder = new std::string(placeholder);
     }
-    return CCLabelTTF::initWithString(m_pPlaceHolder->c_str(), fontName, fontSize);
+    return CCLabelTTF::initWithString(m_pPlaceHolder->c_str(), fontName, fontSize, style);
 }
 
 //////////////////////////////////////////////////////////////////////////

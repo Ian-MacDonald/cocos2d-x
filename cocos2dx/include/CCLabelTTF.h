@@ -41,14 +41,14 @@ namespace cocos2d{
 		CCLabelTTF();
 		virtual ~CCLabelTTF();
 		char * description();
-		/** creates a CCLabelTTF from a fontname, alignment, dimension and font size */
-		static CCLabelTTF * labelWithString(const char *label, const CCSize& dimensions, CCTextAlignment alignment, const char *fontName, float fontSize);
-		/** creates a CCLabelTTF from a fontname and font size */
-		static CCLabelTTF * labelWithString(const char *label, const char *fontName, float fontSize);
-		/** initializes the CCLabelTTF with a font name, alignment, dimension and font size */
-		bool initWithString(const char *label, const CCSize& dimensions, CCTextAlignment alignment, const char *fontName, float fontSize);
-		/** initializes the CCLabelTTF with a font name and font size */
-		bool initWithString(const char *label, const char *fontName, float fontSize);
+		/** creates a CCLabelTTF from a fontname, alignment, style, dimension and font size */
+		static CCLabelTTF * labelWithString(const char *label, const CCSize& dimensions, CCTextAlignment alignment, CCTextStyle style, const char *fontName, float fontSize);
+		/** creates a CCLabelTTF from a fontname, style and font size */
+		static CCLabelTTF * labelWithString(const char *label, const char *fontName, float fontSize, CCTextStyle style = kTextStyleAntiAliased);
+		/** initializes the CCLabelTTF with a font name, alignment, style, dimension and font size */
+		bool initWithString(const char *label, const CCSize& dimensions, CCTextAlignment alignment, CCTextStyle style, const char *fontName, float fontSize);
+		/** initializes the CCLabelTTF with a font name, style and font size */
+		bool initWithString(const char *label, const char *fontName, float fontSize, CCTextStyle style = kTextStyleAntiAliased);
 
 		/** changes the string to render
 		* @warning Changing the string is as expensive as creating a new CCLabelTTF. To obtain better performance use CCLabelAtlas
@@ -60,6 +60,7 @@ namespace cocos2d{
 	protected:
 		CCSize m_tDimensions;
 		CCTextAlignment m_eAlignment;
+		CCTextStyle m_eStyle;
         std::string * m_pFontName;
 		float m_fFontSize;
         std::string * m_pString;

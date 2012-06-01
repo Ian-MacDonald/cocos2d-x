@@ -122,7 +122,7 @@ namespace cocos2d{
 		if( CCSize::CCSizeEqualToSize( m_tDimensions, CCSizeZero ) )
 		{
 			texture = new CCTexture2D();
-			texture->initWithString(label, m_pFontName->c_str(), m_fFontSize);
+			texture->initWithString(label, m_pFontName->c_str(), m_fFontSize, m_eStyle);
 		}
 		else
 		{

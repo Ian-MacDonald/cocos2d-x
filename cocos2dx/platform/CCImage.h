@@ -26,7 +26,6 @@ THE SOFTWARE.
 #define __CC_IMAGE_H_YANGWS_20110115__
 
 #include "CCCommon.h"
-#include "ccTypes.h"
 
 NS_CC_BEGIN;
 
@@ -56,6 +55,22 @@ public:
         kAlignLeft          = 0x31, ///< Horizontal left and vertical center.
         kAlignTopLeft       = 0x11, ///< Horizontal left and vertical top.
     }ETextAlign;
+
+    typedef enum
+    {
+      kStyleAliased = 0x00,
+      kStyleNormal  = 0x00,
+
+      kStyleBold        = 0x01,
+      kStyleItalic      = 0x02,
+      kStyleAntiAliased = 0x04,
+
+      // helpers
+      kStyleBoldItalic   = kStyleBold | kStyleItalic,
+      kStyleBoldAA       = kStyleBold | kStyleAntiAliased,
+      kStyleItalicAA     = kStyleItalic | kStyleAntiAliased,
+      kStyleBoldItalicAA = kStyleBold | kStyleItalic | kStyleAntiAliased,
+    } ETextStyle;
 
     /** 
     @brief  Load the image from the specified path. 
@@ -104,7 +119,7 @@ public:
         int             nWidth = 0, 
         int             nHeight = 0,
         ETextAlign      eAlignMask = kAlignCenter,
-        CCTextStyle     eStyle = kTextStyleAntiAliased,
+        ETextStyle      eStyle = kStyleAntiAliased,
         const char *    pFontName = 0,
         int             nSize = 0);
 

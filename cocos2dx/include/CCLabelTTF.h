@@ -42,13 +42,13 @@ namespace cocos2d{
 		virtual ~CCLabelTTF();
 		char * description();
 		/** creates a CCLabelTTF from a fontname, alignment, style, dimension and font size */
-		static CCLabelTTF * labelWithString(const char *label, const CCSize& dimensions, CCTextAlignment alignment, CCTextStyle style, const char *fontName, float fontSize);
+		static CCLabelTTF * labelWithString(const char *label, const CCSize& dimensions, CCTextAlignment alignment, const char *fontName, float fontSize, CCTextStyle style = CCTextStyleNormal);
 		/** creates a CCLabelTTF from a fontname, style and font size */
-		static CCLabelTTF * labelWithString(const char *label, const char *fontName, float fontSize, CCTextStyle style = kTextStyleAntiAliased);
+		static CCLabelTTF * labelWithString(const char *label, const char *fontName, float fontSize, CCTextStyle style = CCTextStyleNormal);
 		/** initializes the CCLabelTTF with a font name, alignment, style, dimension and font size */
-		bool initWithString(const char *label, const CCSize& dimensions, CCTextAlignment alignment, CCTextStyle style, const char *fontName, float fontSize);
+		bool initWithString(const char *label, const CCSize& dimensions, CCTextAlignment alignment, const char *fontName, float fontSize, CCTextStyle style = CCTextStyleNormal);
 		/** initializes the CCLabelTTF with a font name, style and font size */
-		bool initWithString(const char *label, const char *fontName, float fontSize, CCTextStyle style = kTextStyleAntiAliased);
+		bool initWithString(const char *label, const char *fontName, float fontSize, CCTextStyle style = CCTextStyleNormal);
 
 		/** changes the string to render
 		* @warning Changing the string is as expensive as creating a new CCLabelTTF. To obtain better performance use CCLabelAtlas

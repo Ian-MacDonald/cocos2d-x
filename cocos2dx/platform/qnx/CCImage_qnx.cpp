@@ -47,7 +47,7 @@ public:
 		CC_SAFE_DELETE(m_pBitmap);
     }
 
-	bool setFont(const char *pFontName = NULL, int nSize = 0)
+	bool setFont(const char *pFontName = NULL, int nSize = 0, CCImage::ETextStyle eStyle = CCImage::kStyleNormal)
 	{
 		bool bRet = false;
 
@@ -66,7 +66,16 @@ public:
 			m_pPaint->setTextSize(nSize);
 
 			/* create font */
-			SkTypeface *pTypeFace = SkTypeface::CreateFromName(pFontName, SkTypeface::kNormal);
+			SkTypeface::Style style = SkTypeface::kNormal;
+			if ((eStyle & CCImage::kStyleBold) != 0 && (eStyle & CCImage::kStyleItalic) != 0) {
+			  style = SkTypeface::kBoldItalic;
+			} else if ((eStyle & CCImage::kStyleBold) != 0) {
+			  style = SkTypeface::kBold;
+			} else if ((eStyle & CCImage::kStyleItalic) != 0) {
+			  style = SkTypeface::kItalic;
+			}
+
+			SkTypeface *pTypeFace = SkTypeface::CreateFromName(pFontName, style);
 			if (! pTypeFace)
 			{
 				// let's replace with Arial first before failing
@@ -122,7 +131,7 @@ public:
 		return true;
 	}
 
-	bool drawText(const char *pszText, int nWidth, int nHeight, CCImage::ETextAlign eAlignMask)
+	bool drawText(const char *pszText, int nWidth, int nHeight, CCImage::ETextAlign eAlignMask, bool antialias)
     {
         bool bRet = false;
 
@@ -134,6 +143,11 @@ public:
 			/* create canvas */
 			SkPaint::FontMetrics font;
 			m_pPaint->getFontMetrics(&font);
+			if (antialias) {
+			  m_pPaint->setFlags(m_pPaint->getFlags() | SkPaint::kAntiAlias_Flag);
+			} else {
+			  m_pPaint->setFlags(m_pPaint->getFlags() & ~SkPaint::kAntiAlias_Flag);
+			}
 			SkCanvas canvas(*m_pBitmap);
 
 			/*
@@ -192,6 +206,7 @@ bool CCImage::initWithString(
                                int             nWidth/* = 0*/, 
                                int             nHeight/* = 0*/,
                                ETextAlign      eAlignMask/* = kAlignCenter*/,
+                               ETextStyle      eStyle/* = kStyleAntiAliased*/,
                                const char *    pFontName/* = nil*/,
                                int             nSize/* = 0*/)
 {
@@ -204,7 +219,7 @@ bool CCImage::initWithString(
         BitmapDC &dc = sharedBitmapDC();
 
 		/* init font with font name and size */
-		CC_BREAK_IF(! dc.setFont(pFontName, nSize));
+		CC_BREAK_IF(! dc.setFont(pFontName, nSize, eStyle));
 
 		/* compute text width and height */
 		if (nWidth <= 0 || nHeight <= 0)
@@ -213,7 +228,7 @@ bool CCImage::initWithString(
 		}
 		CC_BREAK_IF(nWidth <= 0 || nHeight <= 0);
 
-		CC_BREAK_IF( false == dc.drawText(pText, nWidth, nHeight, eAlignMask) );
+		CC_BREAK_IF( false == dc.drawText(pText, nWidth, nHeight, eAlignMask, (eStyle & kStyleAntiAliased) != 0) );
 
 		/*init image information */
 		SkBitmap *pBitmap = dc.getBitmap();

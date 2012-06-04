@@ -205,6 +205,7 @@ bool CCImage::initWithString(
                                int             nWidth/* = 0*/,
                                int             nHeight/* = 0*/,
                                ETextAlign      eAlignMask/* = kAlignCenter*/,
+                               ETextStyle      eStyle/* = kTextStyleAntiAliased*/,
                                const char *    pFontName/* = nil*/,
                                int             nSize/* = 0*/)
 {

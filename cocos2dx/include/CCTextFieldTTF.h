@@ -98,13 +98,13 @@ public:
     //char * description();
 
     /** creates a CCTextFieldTTF from a fontname, alignment, dimension and font size */
-    static CCTextFieldTTF * textFieldWithPlaceHolder(const char *placeholder, const CCSize& dimensions, CCTextAlignment alignment, CCTextStyle style, const char *fontName, float fontSize);
+    static CCTextFieldTTF * textFieldWithPlaceHolder(const char *placeholder, const CCSize& dimensions, CCTextAlignment alignment, const char *fontName, float fontSize, CCTextStyle style = CCTextStyleNormal);
     /** creates a CCLabelTTF from a fontname and font size */
-    static CCTextFieldTTF * textFieldWithPlaceHolder(const char *placeholder, const char *fontName, float fontSize, CCTextStyle style);
+    static CCTextFieldTTF * textFieldWithPlaceHolder(const char *placeholder, const char *fontName, float fontSize, CCTextStyle style = CCTextStyleNormal);
     /** initializes the CCTextFieldTTF with a font name, alignment, dimension and font size */
-    bool initWithPlaceHolder(const char *placeholder, const CCSize& dimensions, CCTextAlignment alignment, CCTextStyle style, const char *fontName, float fontSize);
+    bool initWithPlaceHolder(const char *placeholder, const CCSize& dimensions, CCTextAlignment alignment, const char *fontName, float fontSize, CCTextStyle style = CCTextStyleNormal);
     /** initializes the CCTextFieldTTF with a font name and font size */
-    bool initWithPlaceHolder(const char *placeholder, const char *fontName, float fontSize, CCTextStyle style = kTextStyleAntiAliased);
+    bool initWithPlaceHolder(const char *placeholder, const char *fontName, float fontSize, CCTextStyle style = CCTextStyleNormal);
 
     /**
     @brief	Open keyboard and receive input text.

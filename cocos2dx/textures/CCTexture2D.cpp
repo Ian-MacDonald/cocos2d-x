@@ -460,11 +460,11 @@ bool CCTexture2D::initPremultipliedATextureWithImage(CCImage *image, unsigned in
 }
 
 // implementation CCTexture2D (Text)
-bool CCTexture2D::initWithString(const char *text, const char *fontName, float fontSize, CCTextStyle eStyle)
+bool CCTexture2D::initWithString(const char *text, const char *fontName, float fontSize, CCTextStyle style)
 {
-	return initWithString(text, CCSizeMake(0,0), CCTextAlignmentCenter, fontName, fontSize, eStyle);
+	return initWithString(text, CCSizeMake(0,0), CCTextAlignmentCenter, fontName, fontSize, style);
 }
-bool CCTexture2D::initWithString(const char *text, const CCSize& dimensions, CCTextAlignment alignment, const char *fontName, float fontSize, CCTextStyle eStyle)
+bool CCTexture2D::initWithString(const char *text, const CCSize& dimensions, CCTextAlignment alignment, const char *fontName, float fontSize, CCTextStyle style)
 {
 #if CC_ENABLE_CACHE_TEXTTURE_DATA
     // cache the texture data
@@ -474,6 +474,9 @@ bool CCTexture2D::initWithString(const char *text, const CCSize& dimensions, CCT
 	CCImage image;
     CCImage::ETextAlign eAlign = (CCTextAlignmentCenter == alignment) ? CCImage::kAlignCenter
         : (CCTextAlignmentLeft == alignment) ? CCImage::kAlignLeft : CCImage::kAlignRight;
+    CCImage::ETextStyle eStyle = (CCImage::ETextStyle)(CCImage::kStyleAntiAliased | ((CCTextStyleBold == style) ? CCImage::kStyleBold
+        : (CCTextStyleItalic == style) ? CCImage::kStyleItalic
+        : (CCTextStyleBoldItalic == style) ? CCImage::kStyleBoldItalic : CCImage::kStyleNormal));
     
     if (! image.initWithString(text, (int)dimensions.width, (int)dimensions.height, eAlign, eStyle, fontName, (int)fontSize))
     {

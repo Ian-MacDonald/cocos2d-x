@@ -161,7 +161,7 @@ public:
         return bRet;
     }
 
-	bool getTextExtentPoint(const char * pszText, int *pWidth, int *pHeight)
+	bool getTextExtentPoint(const char * pszText, int *pWidth, int *pHeight, bool antialias)
 	{
 		bool bRet = false;
 
@@ -174,6 +174,11 @@ public:
 			{
 				SkPaint::FontMetrics font;
 				m_pPaint->getFontMetrics(&font);
+	      if (antialias) {
+	        m_pPaint->setFlags(m_pPaint->getFlags() | SkPaint::kAntiAlias_Flag);
+	      } else {
+	        m_pPaint->setFlags(m_pPaint->getFlags() & ~SkPaint::kAntiAlias_Flag);
+	      }
 				*pHeight = (int)ceil((font.fDescent - font.fAscent));
 				*pWidth = (int)ceil((m_pPaint->measureText(pszText, strlen(pszText))));
 
@@ -224,7 +229,7 @@ bool CCImage::initWithString(
 		/* compute text width and height */
 		if (nWidth <= 0 || nHeight <= 0)
 		{
-			dc.getTextExtentPoint(pText, &nWidth, &nHeight);
+			dc.getTextExtentPoint(pText, &nWidth, &nHeight, (eStyle & kStyleAntiAliased) != 0);
 		}
 		CC_BREAK_IF(nWidth <= 0 || nHeight <= 0);
 

@@ -64,3 +64,7 @@ build/
 Simulator/
 Device-Debug/
 Device-Release/
+*/proj.qnx/Device-Coverage/
+*/proj.qnx/Simulator-Coverage/
+*/proj.qnx/Device-Profile/
+*/proj.qnx/Simulator-Profile/

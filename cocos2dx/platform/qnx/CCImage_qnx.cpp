@@ -131,35 +131,101 @@ public:
 		return true;
 	}
 
-	bool drawText(const char *pszText, int nWidth, int nHeight, CCImage::ETextAlign eAlignMask, bool antialias)
+	void drawTextLine(char *pszLine, const SkPaint::FontMetrics& font, float fXPosition, float fYPosition) {
+	  SkCanvas canvas(*m_pBitmap);
+	  canvas.drawText(pszLine, strlen(pszLine), fXPosition, -font.fAscent + fYPosition, *m_pPaint);
+	}
+
+  bool drawText(const char *pszText, int nWidth, int nHeight, CCImage::ETextAlign eAlignMask, bool antialias)
+  {
+    bool bRet = false;
+
+    do
     {
-        bool bRet = false;
+      int nTextureWidth = 0;
+      int nTextureHeight = 0;
+      CC_BREAK_IF(! pszText);
 
-        do 
-        {
-            CC_BREAK_IF(! pszText);
-            CC_BREAK_IF(! prepareBitmap(nWidth, nHeight));
+      SkPaint::FontMetrics font;
+      m_pPaint->getFontMetrics(&font);
+      if (antialias) {
+        m_pPaint->setFlags(m_pPaint->getFlags() | SkPaint::kAntiAlias_Flag);
+      } else {
+        m_pPaint->setFlags(m_pPaint->getFlags() & ~SkPaint::kAntiAlias_Flag);
+      }
 
-			/* create canvas */
-			SkPaint::FontMetrics font;
-			m_pPaint->getFontMetrics(&font);
-			if (antialias) {
-			  m_pPaint->setFlags(m_pPaint->getFlags() | SkPaint::kAntiAlias_Flag);
-			} else {
-			  m_pPaint->setFlags(m_pPaint->getFlags() & ~SkPaint::kAntiAlias_Flag);
-			}
-			SkCanvas canvas(*m_pBitmap);
+      const char * breakableCharacters = "\n\t -";
 
-			/*
-			 * draw text
-			 * @todo: alignment
-			 */
-			canvas.drawText(pszText, strlen(pszText), 0.0, -font.fAscent, *m_pPaint);
-			bRet = true;
-        } while (0);
+      size_t indexCount = 1;
+      size_t indexSize = 16; // To reduce the number of allocations needed for indices we allocate in chunks of 16.
+      int *indices = (int*)calloc(indexSize, sizeof(int));
+      size_t i, j;
+      size_t length = strlen(pszText);
+      size_t lastBreakableIndex = 0;
 
-        return bRet;
-    }
+      CC_BREAK_IF(!indices);
+
+      for(i = 0; i < length; ++i) {
+        int idx = indices[indexCount-1];
+        int measureLength = (i - idx)+1;
+        if(measureLength <= 0) {
+          continue;
+        }
+        float textWidth = m_pPaint->measureText(&pszText[idx], measureLength);
+
+        if(textWidth > (float)nWidth || pszText[i] == '\n') {
+          if(indexCount >= indexSize) {
+            indexSize += 16;
+            indices = (int*)realloc(indices, indexSize*sizeof(int));
+            CC_BREAK_IF(!indices);
+            memset(&indices[indexCount], 0, indexSize - indexCount);
+          }
+          indices[indexCount] = lastBreakableIndex;
+          i = lastBreakableIndex + 1;
+          indexCount++;
+          continue;
+        }
+
+        for(j = 0; j < sizeof(breakableCharacters); ++j) {
+          if(pszText[i] == breakableCharacters[j]) {
+            lastBreakableIndex = i+1;
+          }
+        }
+      }
+
+      if(indexCount > 1) {
+        nTextureWidth = nWidth;
+      } else {
+        nTextureWidth = m_pPaint->measureText(pszText, length);
+      }
+      float lineHeight = ceil((font.fDescent - font.fAscent));
+      nTextureHeight = indexCount * lineHeight;
+
+      /*
+       * draw text
+       * @todo: alignment
+       */
+      CC_BREAK_IF(! prepareBitmap(nTextureWidth, nTextureHeight));
+      float fXPosition = 0.0f;
+      float fYPosition = 0.0f;
+      for(i = 0; i < indexCount - 1; ++i) {
+        int cpyLength =  indices[i+1] - indices[i];
+        char * textLine = (char*)malloc(cpyLength +1);
+        CC_BREAK_IF(!textLine);
+        memcpy(textLine, &pszText[indices[i]], cpyLength);
+        textLine[cpyLength] = '\0';
+        drawTextLine(textLine, font, fXPosition, fYPosition);
+        fYPosition += lineHeight;
+        free(textLine);
+      }
+      drawTextLine((char*)&pszText[indices[indexCount-1]], font, fXPosition, fYPosition);
+
+      bRet = true;
+      free(indices);
+    }while (0);
+
+    return bRet;
+  }
 
 	bool getTextExtentPoint(const char * pszText, int *pWidth, int *pHeight, bool antialias)
 	{

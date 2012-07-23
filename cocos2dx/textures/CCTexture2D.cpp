@@ -462,9 +462,10 @@ bool CCTexture2D::initPremultipliedATextureWithImage(CCImage *image, unsigned in
 // implementation CCTexture2D (Text)
 bool CCTexture2D::initWithString(const char *text, const char *fontName, float fontSize, CCTextStyle style)
 {
-	return initWithString(text, CCSizeMake(0,0), CCTextAlignmentCenter, fontName, fontSize, style);
+  CCSize size = CCSizeMake(0,0);
+	return initWithString(text, size, CCTextAlignmentCenter, fontName, fontSize, style);
 }
-bool CCTexture2D::initWithString(const char *text, const CCSize& dimensions, CCTextAlignment alignment, const char *fontName, float fontSize, CCTextStyle style)
+bool CCTexture2D::initWithString(const char *text, CCSize& dimensions, CCTextAlignment alignment, const char *fontName, float fontSize, CCTextStyle style)
 {
 #if CC_ENABLE_CACHE_TEXTTURE_DATA
     // cache the texture data
@@ -482,6 +483,9 @@ bool CCTexture2D::initWithString(const char *text, const CCSize& dimensions, CCT
     {
         return false;
     }
+
+    dimensions.height = (float)image.getHeight();
+
     return initWithImage(&image);
 }
 

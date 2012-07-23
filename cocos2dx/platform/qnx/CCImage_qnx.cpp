@@ -180,10 +180,17 @@ public:
             CC_BREAK_IF(!indices);
             memset(&indices[indexCount], 0, indexSize - indexCount);
           }
-          indices[indexCount] = lastBreakableIndex;
-          i = lastBreakableIndex + 1;
-          indexCount++;
-          continue;
+          if(idx == (int)lastBreakableIndex) { // The current word is longer then a line
+            indices[indexCount] = i + 1;
+            lastBreakableIndex = i + 1;
+            indexCount++;
+            continue;
+          } else {
+            indices[indexCount] = lastBreakableIndex;
+            i = lastBreakableIndex + 1;
+            indexCount++;
+            continue;
+          }
         }
 
         for(j = 0; j < sizeof(breakableCharacters); ++j) {
@@ -200,7 +207,8 @@ public:
       }
       float lineHeight = ceil((font.fDescent - font.fAscent));
       nTextureHeight = indexCount * lineHeight;
-
+      printf("idxC: %d lineH: %d nTH: %d\n", indexCount, (int)lineHeight, nTextureHeight);
+      fflush(stdout);
       /*
        * draw text
        * @todo: alignment
@@ -319,7 +327,8 @@ bool CCImage::initWithString(
 		m_bHasAlpha = true;
 		m_bPreMulti = true;
 		m_nBitsPerComponent = pBitmap->bytesPerPixel();
-
+		printf("m_nHeight: %d\n", m_nHeight);
+		fflush(stdout);
 		bRet = true;
     } while (0);
 

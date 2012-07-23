@@ -207,8 +207,6 @@ public:
       }
       float lineHeight = ceil((font.fDescent - font.fAscent));
       nTextureHeight = indexCount * lineHeight;
-      printf("idxC: %d lineH: %d nTH: %d\n", indexCount, (int)lineHeight, nTextureHeight);
-      fflush(stdout);
       /*
        * draw text
        * @todo: alignment
@@ -327,8 +325,7 @@ bool CCImage::initWithString(
 		m_bHasAlpha = true;
 		m_bPreMulti = true;
 		m_nBitsPerComponent = pBitmap->bytesPerPixel();
-		printf("m_nHeight: %d\n", m_nHeight);
-		fflush(stdout);
+
 		bRet = true;
     } while (0);
 

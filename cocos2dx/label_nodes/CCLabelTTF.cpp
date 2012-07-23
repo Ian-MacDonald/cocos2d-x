@@ -129,7 +129,6 @@ namespace cocos2d{
 			texture = new CCTexture2D();
 			texture->initWithString(label, m_tDimensions, m_eAlignment, m_pFontName->c_str(), m_fFontSize, m_eStyle);
 			setContentSize(CCSize(m_tDimensions.width, m_tDimensions.height));
-			printf("content size: %f, %f\n", getContentSize().width, getContentSize().height); fflush(stdout);
 		}
 		this->setTexture(texture);
 		texture->release();

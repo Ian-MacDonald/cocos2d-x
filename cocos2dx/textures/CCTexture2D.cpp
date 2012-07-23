@@ -485,8 +485,6 @@ bool CCTexture2D::initWithString(const char *text, CCSize& dimensions, CCTextAli
     }
 
     dimensions.height = (float)image.getHeight();
-    printf("Dimensions height: %f\n", dimensions.height);
-    fflush(stdout);
 
     return initWithImage(&image);
 }

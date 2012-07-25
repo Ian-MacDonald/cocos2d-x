@@ -128,11 +128,12 @@ namespace cocos2d{
 		{
 			texture = new CCTexture2D();
 			texture->initWithString(label, m_tDimensions, m_eAlignment, m_pFontName->c_str(), m_fFontSize, m_eStyle);
+			setContentSize(CCSize(m_tDimensions.width, m_tDimensions.height));
 		}
 		this->setTexture(texture);
 		texture->release();
 
-        CCRect rect = CCRectZero;
+    CCRect rect = CCRectZero;
 		rect.size = m_pobTexture->getContentSize();
 		this->setTextureRect(rect);
 	}
